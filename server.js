@@ -1,20 +1,16 @@
 const express = require('express');
 const app = express();
 const request = require('request');
-const fireBaseUrl = 'https://watch-yo-weight.firebaseio.com/weights.json';
+require('dotenv').config();
+const firebaseUrl = process.env.FIREBASE_URL;
 
 app.get('/', (req, res) => {
-  res.send('Can I help you?');
+    res.send('Can I help you?');
 });
 
 app.get('/weights', (req, res) => {
-    request(fireBaseUrl, (error, response, body) => {
-        if (error) {
-            console.log('Error Encountered accesing fireBaseUrl.')
-            console.error(error);
-        }
-
-        res.send(body);
+    request(firebaseUrl, (error, response, body) => {
+        res.json(body);
     });
 });
 

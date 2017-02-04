@@ -4,6 +4,7 @@
   "description": "Watch Your Weight API",
   "main": "server.js",
   "scripts": {
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/joefearnley/wyw-api#readme",
   "dependencies": {
+    "dotenv": "^4.0.0",
     "express": "^4.14.1",
     "request": "^2.79.0"
   }
