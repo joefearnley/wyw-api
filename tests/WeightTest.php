@@ -5,7 +5,6 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class WeightTest extends TestCase
 {
-    /** @test */
     public function testItShouldReturnAllWeights()
     {
         $this->get('/weights')

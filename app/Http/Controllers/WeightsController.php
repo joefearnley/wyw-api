@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use GuzzleHttp\Client;
 
 class WeightsController extends Controller
@@ -15,16 +16,13 @@ class WeightsController extends Controller
     public function __construct()
     {
         $this->fireBaseUrl = env('FIREBASE_URL');
-
-        // dd($this->fireBaseUrl);
     }
 
     public function index()
     {
-        $client = new GuzzleHttp\Client();
+        $client = new Client();
         $result = $client->request('GET', $this->fireBaseUrl);
 
-        dd($result);
-
+        return respone()->toJson($result->getBody());
     }
 }
