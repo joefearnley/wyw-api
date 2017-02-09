@@ -21,8 +21,10 @@ class WeightsController extends Controller
     public function index()
     {
         $client = new Client();
-        $result = $client->request('GET', $this->fireBaseUrl);
+        $response = $client->get($this->fireBaseUrl);
 
-        return respone()->toJson($result->getBody());
+        return response()->json(
+            json_decode($response->getBody(), true)
+        );
     }
 }
