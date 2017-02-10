@@ -8,6 +8,8 @@ class WeightsController extends Controller
 {
     private $fireBaseUrl;
 
+    private $fireBaseConfig;
+
     /**
      * Create a new controller instance.
      *
@@ -15,10 +17,17 @@ class WeightsController extends Controller
      */
     public function __construct()
     {
-        $this->fireBaseUrl = env('FIREBASE_URL');
+        $this->fireBaseUrl = ;
+
+        $this->$fireBaseConfig = new \Geckob\Firebase\Firebase('path_to_your_secret_file.json');
     }
 
-    public function index()
+   /**
+     * Fetch all weights from the Firebase API.
+     *
+     * @return void
+     */
+    public function all()
     {
         $client = new Client();
         $response = $client->get($this->fireBaseUrl);
