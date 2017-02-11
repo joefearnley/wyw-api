@@ -11,6 +11,14 @@ class WeightTest extends TestCase
              ->seeJson([
                 'weight' => 175,
                 'date' => '1/30/2017'
+             ])
+            ->seeJson([
+                'weight' => 170,
+                'date' => '2/30/2017'
+             ])
+            ->seeJson([
+                'weight' => 165,
+                'date' => '3/30/2017'
              ]);
     }
 }
