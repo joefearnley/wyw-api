@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Weight extends Model 
 {
@@ -12,9 +13,18 @@ class Weight extends Model
      * @var array
      */
     protected $fillable = [
-        'weight', 'weigh_in_date',
+        'weight', 'weigh_in_date', 'user_id'
     ];
-}
 
-curl -X POST -d '{"weight" : "166.0", "date" : "2017-02-11"}' \
-  'https://https://watch-yo-weight.firebaseio.com/weights.json'
+    public function setWeighInDateAttribute($value)
+    {
+        $weightInDate = new Carbon($value);
+        $this->attributes['weigh_in_date'] = $weightInDate->format('Y-m-d');
+    }
+
+    public function getWeighInDateAttribute()
+    {
+        $weightInDate = new Carbon($value);
+        return $this->attributes['weigh_in_date']
+    }
+}

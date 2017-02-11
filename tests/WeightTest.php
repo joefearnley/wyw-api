@@ -5,20 +5,28 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class WeightTest extends TestCase
 {
+    use DatabaseMigrations;
+
     public function testItShouldReturnAllWeights()
     {
+        $weight1 = factory(App\Weight::class)->make([
+            'weight' => 175,
+            'weigh_in_date' => '1/30/2017'
+        ]);
+
+        $weight2 = factory(App\Weight::class)->make([
+            'weight' => 170,
+            'weight_in_date' => '1/30/2017'
+        ]);
+        $weight3 = factory(App\Weight::class)->make([
+            'weight' => 165,
+            'weight_in_date' => '1/30/2017'
+        ]);
+
         $this->get('/weights')
              ->seeJson([
                 'weight' => 175,
-                'date' => '1/30/2017'
-             ])
-            ->seeJson([
-                'weight' => 170,
-                'date' => '2/30/2017'
-             ])
-            ->seeJson([
-                'weight' => 165,
-                'date' => '3/30/2017'
+                'weigh_in_date' => '1/30/2017'
              ]);
     }
 }
