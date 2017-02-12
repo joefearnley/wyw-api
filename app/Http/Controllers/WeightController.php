@@ -8,13 +8,25 @@ use Carbon\Carbon;
 class WeightController extends Controller
 {
    /**
-     * Fetch all weights from the Firebase API.
+     * Fetch all weights.
      *
      * @return void
      */
     public function all()
     {
-        return response()->json(Weight::all());
+        // return response()->json([
+        //     'weight' => 175,
+        //     'weigh_in_date' => date('Y-m-d', strtotime('1/30/2017')),
+        //     'user_id' => 1
+        // ]);
+
+        echo '<pre>';
+        var_dump(Weight::all());
+        die();
+
+        //$weights = app('db')->select("SELECT * FROM weights");
+
+        return response()->json($weights);
     }
 
     public function save()

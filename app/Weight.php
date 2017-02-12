@@ -24,7 +24,7 @@ class Weight extends Model
 
     public function getWeighInDateAttribute()
     {
-        $weightInDate = new Carbon($value);
-        return $this->attributes['weigh_in_date']
+        $weightInDate = new Carbon($this->attributes['weigh_in_date']);
+        return 
     }
 }
