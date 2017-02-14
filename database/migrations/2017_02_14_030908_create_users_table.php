@@ -1,10 +1,8 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-
-class CreateWeightsTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +11,14 @@ class CreateWeightsTable extends Migration
      */
     public function up()
     {
-        Schema::create('weights', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('weight');
-            $table->date('weigh_in_date');
-            $table->integer('user_id')->unsigned();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('api_token', 60)->unique();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -29,8 +26,6 @@ class CreateWeightsTable extends Migration
      */
     public function down()
     {
-        Schema::table('weights', function (Blueprint $table) {
-            Schema::drop('weights');
-        });
+        Schema::dropIfExists('users');
     }
 }

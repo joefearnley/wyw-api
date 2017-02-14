@@ -9,5 +9,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Weight::class, function (Faker\Generator $faker) {
-    return [];
+    return [
+        'weight' => $faker->numberBetween(160, 180),
+        'date' -> $faker->dateTimeThisMonth()
+    ];
 });
