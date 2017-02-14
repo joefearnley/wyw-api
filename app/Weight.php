@@ -7,24 +7,19 @@ use Carbon\Carbon;
 
 class Weight extends Model 
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'weight', 'weigh_in_date', 'user_id'
+        'weight',
+        'weigh_in_date',
+        'user_id'
     ];
 
-    public function setWeighInDateAttribute($value)
+    public function setWeighInDateAttribute($weightInDate)
     {
-        $weightInDate = new Carbon($value);
-        $this->attributes['weigh_in_date'] = $weightInDate->format('Y-m-d');
+        $this->attributes['weigh_in_date'] = Carbon::parse($weightInDate)->format('Y-m-d');
     }
 
     public function getWeighInDateAttribute()
     {
-        $weightInDate = new Carbon($this->attributes['weigh_in_date']);
-        return 
+        return Carbon::parse($this->attributes['weigh_in_date'])->format('d/m/Y');
     }
 }

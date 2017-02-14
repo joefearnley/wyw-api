@@ -7,6 +7,13 @@ use Carbon\Carbon;
 
 class WeightController extends Controller
 {
+    protected $weight;
+
+    public function __construct(Weight $weight)
+    {
+        $this->weight = $weight;
+    }
+
    /**
      * Fetch all weights.
      *
@@ -14,39 +21,7 @@ class WeightController extends Controller
      */
     public function all()
     {
-        // return response()->json([
-        //     'weight' => 175,
-        //     'weigh_in_date' => date('Y-m-d', strtotime('1/30/2017')),
-        //     'user_id' => 1
-        // ]);
-
-        echo '<pre>';
-        var_dump(Weight::all());
-        die();
-
-        //$weights = app('db')->select("SELECT * FROM weights");
-
-        return response()->json($weights);
+        return response()->json($this->weight->all());
     }
 
-    public function save()
-    {
-        Weight::create([
-            'weight' => 175,
-            'weigh_in_date' => date('Y-m-d', strtotime('1/30/2017')),
-            'user_id' => 1
-        ]);
-
-        Weight::create([
-            'weight' => 170,
-            'weigh_in_date' => date('Y-m-d ', strtotime('2/30/2017')),
-            'user_id' => 1
-        ]);
-
-        Weight::create([
-            'weight' => 165,
-            'weigh_in_date' => date('Y-m-d', strtotime('3/30/2017')),
-            'user_id' => 1
-        ]);
-    }
 }
