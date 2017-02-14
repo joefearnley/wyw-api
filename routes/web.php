@@ -6,6 +6,7 @@ $app->get('/', function () use ($app) {
     return 'Nothing to see here.';
 });
 
-$app->get('/weights', 'WeightController@all');
+$app->group(['prefix' => 'api'], function () use ($app) {
+    $app->get('/weights', 'WeightController@all');
+});
 
-$app->get('/add-weight', 'WeightController@save');

@@ -11,8 +11,12 @@ class WeightsTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = factory(App\User::class, 1)->make();
+        $user = factory(App\User::class, 1)->make([
+            'name' => 'Joe Fearnley'
+        ]);
 
-        factory(App\Weight::class, 3)->create(['user_id' => $use->id]);
+        factory(App\Weight::class, 3)->create([
+            'user_id' => $use->id
+        ]);
     }
 }
