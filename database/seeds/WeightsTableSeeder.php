@@ -11,27 +11,30 @@ class WeightsTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = factory(App\User::class, 1)->create([
+        factory(App\User::class, 1)->create([
             'name' => 'Joe Fearnley',
-            'email' => 'joe.fearnley@gmail.com'
-        ]);
+            'email' => 'joe.fearnley@gmail.com',
+            'password' => app('hash')->make('secret'),
+            'api_token' => str_random(60)
+        ])->each(function($user) {
+            $user->weights()->save(factory(App\Weight::class)->make([
+                'weight' => 175,
+                'weigh_in_date' => '1/30/2017',
+                'user_id' => $user->id
+            ]));
 
-        DB::table('weights')->insert([
-            'weight' => 175,
-            'date' => '2017-01-30',
-            'user_id' => $user->id,
-        ]);
+            $user->weights()->save(factory(App\Weight::class)->make([
+                'weight' => 170,
+                'weigh_in_date' => '2/30/2017',
+                'user_id' => $user->id
+            ]));
 
-        DB::table('weights')->insert([
-            'weight' => 170,
-            'date' => '2017-02-30',
-            'user_id' => $user->id,
-        ]);
+            $user->weights()->save(factory(App\Weight::class)->make([
+                'weight' => 165,
+                'weigh_in_date' => '3/30/2017',
+                'user_id' => $user->id
+            ]));
+        });
 
-        DB::table('weights')->insert([
-            'weight' => 165,
-            'date' => '2017-03-30',
-            'user_id' => $user->id,
-        ]);
     }
 }

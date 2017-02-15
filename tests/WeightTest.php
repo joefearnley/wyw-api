@@ -16,20 +16,18 @@ class WeightTest extends TestCase
         $this->setUpData();
     }
 
-    // public function test_it_should_return_a_401_when_not_authorized()
-    // {
-    //     $this->get('/api/weights');
+    public function test_it_should_return_a_401_when_not_authorized()
+    {
+        $this->get('/api/weights');
 
-    //     $this->assertEquals(401, $this->response->status());
-    //     $this->assertEquals('Unauthorized.', $this->response->getContent());
-    // }
+        $this->assertEquals(401, $this->response->status());
+        $this->assertEquals('Unauthorized.', $this->response->getContent());
+    }
 
     public function testItShouldReturnAllWeightsForUser()
     {
-        $this->get('/api/weights', [
-                'api_token' => $this->user->api_token
-            ])
-             ->seeJson([
+        $this->get('/api/weights?api_token=' . $this->user->api_token)
+            ->seeJson([
                 'weight' => 175,
                 'weigh_in_date' => '1/30/2017'
              ]);
