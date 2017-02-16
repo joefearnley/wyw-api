@@ -24,13 +24,33 @@ class WeightTest extends TestCase
         $this->assertEquals('Unauthorized.', $this->response->getContent());
     }
 
-    public function testItShouldReturnAllWeightsForUser()
+    public function test_it_should_return_all_weights_for_user()
     {
-        $this->get('/api/weights?api_token=' . $this->user->api_token)
-            ->seeJson([
+        $headers = ['Authorization' => 'Bearer ' . $this->user->api_token];
+
+        $this->get('/api/weights', $headers)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
                 'weight' => 175,
                 'weigh_in_date' => '1/30/2017'
              ]);
+    }
+
+    public function test_it_should_add_weight()
+    {
+        $data = [
+            'weight' => 175,
+            'weigh_in_date' => '04-30-2017',
+            'user_id' => $this->user->id
+        ];
+
+        $this->post('/api/weight/add', $data)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
+                'weight' => 175,
+                'weigh_in_date' => '4/30/2017',
+                'user_id' => $this->user->id
+            ]);
     }
 
     protected function setUpData()
@@ -45,13 +65,13 @@ class WeightTest extends TestCase
 
         $weight2 = factory(App\Weight::class)->make([
             'weight' => 170,
-            'weight_in_date' => '1/30/2017',
+            'weight_in_date' => '2/30/2017',
             'user_id' => $this->user->id
         ]);
 
         $weight3 = factory(App\Weight::class)->make([
             'weight' => 165,
-            'weight_in_date' => '1/30/2017',
+            'weight_in_date' => '3/30/2017',
             'user_id' => $this->user->id
         ]);
     }

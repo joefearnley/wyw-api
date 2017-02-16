@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
     /**

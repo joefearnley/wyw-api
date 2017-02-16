@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "dae21f528b20ab489bc46bfb364b803e",
+    "content-hash": "f8b289c4e251b5e4b2ac5a42410b6c3d",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1134,16 +1134,16 @@
         },
         {
             "name": "laravel/lumen-framework",
-            "version": "v5.4.4",
+            "version": "v5.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/lumen-framework.git",
-                "reference": "e88e7ac6fa22bdedb0fc0f55e6abed0d8a6c4ca2"
+                "reference": "834c7f64dc7ee105a80c4bceabfb50496465ef23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/lumen-framework/zipball/e88e7ac6fa22bdedb0fc0f55e6abed0d8a6c4ca2",
-                "reference": "e88e7ac6fa22bdedb0fc0f55e6abed0d8a6c4ca2",
+                "url": "https://api.github.com/repos/laravel/lumen-framework/zipball/834c7f64dc7ee105a80c4bceabfb50496465ef23",
+                "reference": "834c7f64dc7ee105a80c4bceabfb50496465ef23",
                 "shasum": ""
             },
             "require": {
@@ -1177,7 +1177,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "~0.9",
-                "phpunit/phpunit": "~5.7"
+                "phpunit/phpunit": "~5.0"
             },
             "suggest": {
                 "vlucas/phpdotenv": "Required to use .env files (~2.2)."
@@ -1213,7 +1213,7 @@
                 "laravel",
                 "lumen"
             ],
-            "time": "2017-02-09T14:03:25+00:00"
+            "time": "2017-02-04T15:38:14+00:00"
         },
         {
             "name": "monolog/monolog",

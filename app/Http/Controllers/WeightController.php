@@ -22,7 +22,14 @@ class WeightController extends Controller
     {
         $wieghts = $request->user()->weights->all();
 
-        return response()->json($wieghts);
+        return response()->json($wieghts, 200);
+    }
+
+    public function create(Request $request)
+    {
+        $weight = $request->user()->weights->create($request->all());
+
+        return response()->json($weight, 200);
     }
 
 }
