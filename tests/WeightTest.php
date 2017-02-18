@@ -16,42 +16,92 @@ class WeightTest extends TestCase
         $this->setUpData();
     }
 
-    public function test_it_should_return_a_401_when_not_authorized()
-    {
-        $this->get('/api/weights');
-
-        $this->assertEquals(401, $this->response->status());
-        $this->assertEquals('Unauthorized.', $this->response->getContent());
-    }
-
     public function test_it_should_return_all_weights_for_user()
     {
         $headers = ['Authorization' => 'Bearer ' . $this->user->api_token];
-
-        $repsonse = $this->get('/api/weights', $headers);
-
-        $response->seeStatusCode(200)
+        $this->get('/api/weights', $headers)
+            ->seeStatusCode(200)          
             ->seeJsonContains([
-                'weight' => 175,
+                'weight' => '175',
                 'weigh_in_date' => '1/30/2017'
+             ])
+            ->seeJsonContains([
+                'weight' => '170',
+                'weigh_in_date' => '2/25/2017'
+             ])
+            ->seeJsonContains([
+                'weight' => '165',
+                'weigh_in_date' => '3/30/2017'
              ]);
     }
 
-    public function test_it_should_add_weight()
+    // public function test_it_should_add_weight_for_user()
+    // {
+    //     $data = [
+    //         'weight' => 160,
+    //         'weigh_in_date' => '04-30-2017',
+    //         'user_id' => $this->user->id
+    //     ];
+
+    //     $this->post('/api/weights', $data)
+    //         ->seeStatusCode(200)
+    //         ->seeJsonContains([
+    //             'weight' => 160,
+    //             'weigh_in_date' => '4/30/2017',
+    //             'user_id' => $this->user->id
+    //         ]);
+
+    //         // ->seeInDatabase([
+    //         //     'weight' => 160,
+    //         //     'weigh_in_date' => '4/30/2017',
+    //         //     'user_id' => $this->user->id
+    //         // ]);
+    // }
+
+    public function test_it_should_return_a_422_when_no_data_is_given()
     {
-        $data = [
-            'weight' => 175,
-            'weigh_in_date' => '04-30-2017',
-            'user_id' => $this->user->id
+        $this->post('/api/weights', [])
+            ->seeStatusCode(422)
+            ->seeJsonContains(['The weight field is required.'])
+            ->seeJsonContains(['The weigh in date field is required.']);
+    }
+
+    public function test_it_should_return_a_422_when_no_weight_is_given()
+    {
+        $this->post('/api/weights', ['weigh_in_date' => '4/30/2017'])
+            ->seeStatusCode(422)
+            ->seeJsonContains(['The weight field is required.']);
+    }
+
+    public function test_it_should_return_a_422_when_invalid_weight_is_given()
+    {
+        $postData = [
+            'weight' => 'safdasfds', 
+            'weigh_in_date' => '4/30/2017'
         ];
 
-        $this->post('/api/weight/add', $data)
-            ->seeStatusCode(200)
-            ->seeJsonContains([
-                'weight' => 175,
-                'weigh_in_date' => '4/30/2017',
-                'user_id' => $this->user->id
-            ]);
+        $this->post('/api/weights', $postData)
+            ->seeStatusCode(422)
+            ->seeJsonContains(['The weight must be a number.']);
+    }
+
+    public function test_it_should_return_a_422_when_no_weigh_in_date_is_given()
+    {
+        $this->post('/api/weights', ['weight' => 160])
+            ->seeStatusCode(422)
+            ->seeJsonContains(['The weigh in date field is required.']);
+    }
+
+    public function test_it_should_return_a_422_when_invalid_weigh_in_date_is_given()
+    {
+        $postData = [
+            'weight' => 160, 
+            'weigh_in_date' => 'sadfljslkfj'
+        ];
+
+        $this->post('/api/weights', $postData)
+            ->seeStatusCode(422)
+            ->seeJsonContains(['The weigh in date is not a valid date.']);
     }
 
     protected function setUpData()
@@ -66,7 +116,7 @@ class WeightTest extends TestCase
 
         $weight2 = factory(App\Weight::class)->create([
             'weight' => 170,
-            'weigh_in_date' => '2/30/2017',
+            'weigh_in_date' => '2/25/2017',
             'user_id' => $this->user->id
         ]);
 

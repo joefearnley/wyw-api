@@ -7,7 +7,7 @@ $app->get('/', function () use ($app) {
 });
 
 $app->group(['prefix' => 'api'], function () use ($app) {
-    $app->get('/weights', 'WeightController@all');
-    $app->post('/weight/create', 'WeightController@create');
+    $app->get('/weights', 'WeightController@index');
+    $app->post('/weights', 'WeightController@create');
 });
 

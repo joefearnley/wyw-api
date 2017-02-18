@@ -7,10 +7,13 @@ use Carbon\Carbon;
 
 class WeightController extends Controller
 {
+    protected $request;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth');
+
+        $this->request = $request;
     }
 
    /**
@@ -18,16 +21,21 @@ class WeightController extends Controller
      *
      * @return void
      */
-    public function all(Request $request)
+    public function index()
     {
-        $weights = $request->user()->weights->all();
+        $weights = $this->request->user()->weights->all();
 
-        return response()->json($wieghts, 200);
+        return response()->json($weights, 200);
     }
 
-    public function create(Request $request)
+    public function create()
     {
-        $weight = $request->user()->weights->create($request->all());
+        $this->validate($this->request, [
+            'weight' => 'required|numeric',
+            'weigh_in_date' => 'required|date'
+        ]);
+
+        $weight = $this->request->user()->weights()->create($this->request->all());
 
         return response()->json($weight, 200);
     }

@@ -13,13 +13,15 @@ class Weight extends Model
         'user_id'
     ];
 
-    public function setWeighInDateAttribute($weightInDate)
+    public function setWeighInDateAttribute($weighInDate)
     {
-        $this->attributes['weigh_in_date'] = Carbon::parse($weightInDate)->format('Y-m-d');
+        $this->attributes['weigh_in_date'] = Carbon::parse($weighInDate)->format('Y-m-d');
     }
 
     public function getWeighInDateAttribute()
     {
-        return Carbon::parse($this->attributes['weigh_in_date'])->format('d/m/Y');
+        $wieghInDate = Carbon::parse($this->attributes['weigh_in_date'])->format('n/j/Y');
+
+        return $wieghInDate;
     }
 }
