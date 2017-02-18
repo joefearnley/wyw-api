@@ -20,7 +20,7 @@ class WeightController extends Controller
      */
     public function all(Request $request)
     {
-        $wieghts = $request->user()->weights->all();
+        $weights = $request->user()->weights->all();
 
         return response()->json($wieghts, 200);
     }

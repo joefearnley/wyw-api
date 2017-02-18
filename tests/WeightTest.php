@@ -28,8 +28,9 @@ class WeightTest extends TestCase
     {
         $headers = ['Authorization' => 'Bearer ' . $this->user->api_token];
 
-        $this->get('/api/weights', $headers)
-            ->seeStatusCode(200)
+        $repsonse = $this->get('/api/weights', $headers);
+
+        $response->seeStatusCode(200)
             ->seeJsonContains([
                 'weight' => 175,
                 'weigh_in_date' => '1/30/2017'
@@ -55,23 +56,23 @@ class WeightTest extends TestCase
 
     protected function setUpData()
     {
-        $this->user = factory(App\User::class)->make();
+        $this->user = factory(App\User::class)->create();
 
-        $weight1 = factory(App\Weight::class)->make([
+        $weight1 = factory(App\Weight::class)->create([
             'weight' => 175,
             'weigh_in_date' => '1/30/2017',
             'user_id' => $this->user->id
         ]);
 
-        $weight2 = factory(App\Weight::class)->make([
+        $weight2 = factory(App\Weight::class)->create([
             'weight' => 170,
-            'weight_in_date' => '2/30/2017',
+            'weigh_in_date' => '2/30/2017',
             'user_id' => $this->user->id
         ]);
 
-        $weight3 = factory(App\Weight::class)->make([
+        $weight3 = factory(App\Weight::class)->create([
             'weight' => 165,
-            'weight_in_date' => '3/30/2017',
+            'weigh_in_date' => '3/30/2017',
             'user_id' => $this->user->id
         ]);
     }
