@@ -35,30 +35,7 @@ class WeightTest extends TestCase
              ]);
     }
 
-    // public function test_it_should_add_weight_for_user()
-    // {
-    //     $data = [
-    //         'weight' => 160,
-    //         'weigh_in_date' => '04-30-2017',
-    //         'user_id' => $this->user->id
-    //     ];
-
-    //     $this->post('/api/weights', $data)
-    //         ->seeStatusCode(200)
-    //         ->seeJsonContains([
-    //             'weight' => 160,
-    //             'weigh_in_date' => '4/30/2017',
-    //             'user_id' => $this->user->id
-    //         ]);
-
-    //         // ->seeInDatabase([
-    //         //     'weight' => 160,
-    //         //     'weigh_in_date' => '4/30/2017',
-    //         //     'user_id' => $this->user->id
-    //         // ]);
-    // }
-
-    public function test_it_should_return_a_422_when_no_data_is_given()
+    public function test_it_should_return_a_422_when_no_data_is_provided()
     {
         $this->post('/api/weights', [])
             ->seeStatusCode(422)
@@ -66,14 +43,14 @@ class WeightTest extends TestCase
             ->seeJsonContains(['The weigh in date field is required.']);
     }
 
-    public function test_it_should_return_a_422_when_no_weight_is_given()
+    public function test_it_should_return_a_422_when_no_weight_is_provided()
     {
         $this->post('/api/weights', ['weigh_in_date' => '4/30/2017'])
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight field is required.']);
     }
 
-    public function test_it_should_return_a_422_when_invalid_weight_is_given()
+    public function test_it_should_return_a_422_when_invalid_weight_is_provided()
     {
         $postData = [
             'weight' => 'safdasfds', 
@@ -85,14 +62,14 @@ class WeightTest extends TestCase
             ->seeJsonContains(['The weight must be a number.']);
     }
 
-    public function test_it_should_return_a_422_when_no_weigh_in_date_is_given()
+    public function test_it_should_return_a_422_when_no_weigh_in_date_is_provided()
     {
         $this->post('/api/weights', ['weight' => 160])
             ->seeStatusCode(422)
             ->seeJsonContains(['The weigh in date field is required.']);
     }
 
-    public function test_it_should_return_a_422_when_invalid_weigh_in_date_is_given()
+    public function test_it_should_return_a_422_when_invalid_weigh_in_date_is_provided()
     {
         $postData = [
             'weight' => 160, 
@@ -104,6 +81,25 @@ class WeightTest extends TestCase
             ->seeJsonContains(['The weigh in date is not a valid date.']);
     }
 
+    public function test_it_should_add_weight_for_user()
+    {
+        $data = [
+            'weight' => 160,
+            'weigh_in_date' => '4/30/2017'
+        ];
+
+        $this->post('/api/weights', $data)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
+                'weight' => 160,
+                'weigh_in_date' => '4/30/2017',
+                'user_id' => $this->user->id
+            ]);
+    }
+
+    /**
+     * Set up data for test. Add a user and 3 weight records for that user.
+     */
     protected function setUpData()
     {
         $this->user = factory(App\User::class)->create();
