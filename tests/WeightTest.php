@@ -97,9 +97,6 @@ class WeightTest extends TestCase
             ]);
     }
 
-    /**
-     * Set up data for test. Add a user and 3 weight records for that user.
-     */
     protected function setUpData()
     {
         $this->user = factory(App\User::class)->create();
