@@ -16,7 +16,8 @@ class WeightTest extends TestCase
         $this->setUpData();
     }
 
-    public function test_it_should_return_all_weights_for_user()
+    /** @test */
+    public function it_should_return_all_weights_for_user()
     {
         $headers = ['Authorization' => 'Bearer ' . $this->user->api_token];
         $this->get('/api/weights', $headers)
@@ -35,53 +36,62 @@ class WeightTest extends TestCase
              ]);
     }
 
-    public function test_it_should_return_a_422_when_no_data_is_provided()
+    /** @test */
+    public function it_should_return_a_422_when_no_data_is_provided()
     {
-        $this->post('/api/weights', [])
+        $data = [];
+        $this->post('/api/weights', $data)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight field is required.'])
             ->seeJsonContains(['The weigh in date field is required.']);
     }
 
-    public function test_it_should_return_a_422_when_no_weight_is_provided()
+    /** @test */
+    public function it_should_return_a_422_when_no_weight_is_provided()
     {
-        $this->post('/api/weights', ['weigh_in_date' => '4/30/2017'])
+        $data = ['weigh_in_date' => '4/30/2017'];
+        $this->post('/api/weights', $data)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight field is required.']);
     }
 
-    public function test_it_should_return_a_422_when_invalid_weight_is_provided()
+    /** @test */
+    public function it_should_return_a_422_when_invalid_weight_is_provided()
     {
-        $postData = [
+        $data = [
             'weight' => 'safdasfds', 
             'weigh_in_date' => '4/30/2017'
         ];
 
-        $this->post('/api/weights', $postData)
+        $this->post('/api/weights', $data)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight must be a number.']);
     }
 
-    public function test_it_should_return_a_422_when_no_weigh_in_date_is_provided()
+    /** @test */
+    public function it_should_return_a_422_when_no_weigh_in_date_is_provided()
     {
-        $this->post('/api/weights', ['weight' => 160])
+        $data = ['weight' => 160];
+        $this->post('/api/weights', $data)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weigh in date field is required.']);
     }
 
-    public function test_it_should_return_a_422_when_invalid_weigh_in_date_is_provided()
+    /** @test */
+    public function it_should_return_a_422_when_invalid_weigh_in_date_is_provided()
     {
-        $postData = [
+        $data = [
             'weight' => 160, 
             'weigh_in_date' => 'sadfljslkfj'
         ];
 
-        $this->post('/api/weights', $postData)
+        $this->post('/api/weights', $data)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weigh in date is not a valid date.']);
     }
 
-    public function test_it_should_add_weight_for_user()
+    /** @test */
+    public function it_should_add_weight_for_user()
     {
         $data = [
             'weight' => 160,
@@ -95,6 +105,37 @@ class WeightTest extends TestCase
                 'weigh_in_date' => '4/30/2017',
                 'user_id' => $this->user->id
             ]);
+    }
+
+    /** @test */
+    public function it_should_return_a_405_when_no_id_is_provided_for_delete($value='')
+    {
+        $this->delete('/api/weights')
+            ->seeStatusCode(405);
+    }
+
+    /** @test */
+    public function it_should_delete_a_weight_record_for_user()
+    {
+        $initalWeightCount = $this->user->weights->count();
+
+        $weight = $this->user->weights()->create([
+            'weight' => 175,
+            'weigh_in_date' => '1/30/2017',
+            'user_id' => $this->user->id
+        ]);
+
+        $this->user = $this->user->fresh();
+
+        $this->assertEquals($initalWeightCount + 1, $this->user->weights->count());
+
+        $this->delete('api/weights/' . $weight->id)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
+                'Weight deleted.'
+            ]);
+
+        $this->assertEquals($this->user->fresh()->weights->count(), $initalWeightCount);
     }
 
     protected function setUpData()
