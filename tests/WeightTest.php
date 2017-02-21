@@ -7,6 +7,11 @@ class WeightTest extends TestCase
 {
     use DatabaseMigrations;
 
+    /**
+     * User used for tests.
+     * 
+     * @var App\User
+     */
     private $user;
 
     public function setUp()
@@ -138,6 +143,10 @@ class WeightTest extends TestCase
         $this->assertEquals($this->user->fresh()->weights->count(), $initalWeightCount);
     }
 
+    /**
+     * Set up the data for the initial tests for the Weight modal. 
+     * Create a user and 3 weights for that user. 
+     */
     protected function setUpData()
     {
         $this->user = factory(App\User::class)->create();
