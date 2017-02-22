@@ -8,6 +8,11 @@ use App\Weight;
 
 class WeightController extends Controller
 {
+    /**
+     * Http request for controller.
+     * 
+     * @var Illuminate\Http\Request;
+     */
     protected $request;
 
     /**
@@ -41,10 +46,7 @@ class WeightController extends Controller
      */
     public function create()
     {
-        $this->validate($this->request, [
-            'weight' => 'required|numeric',
-            'weigh_in_date' => 'required|date'
-        ]);
+        $this->validateRequest();
 
         $weight = $this->request->user()->weights()->create($this->request->all());
 
@@ -74,10 +76,7 @@ class WeightController extends Controller
      */
     public function update($id)
     {
-        $this->validate($this->request, [
-            'weight' => 'required|numeric',
-            'weigh_in_date' => 'required|date'
-        ]);
+       $this->validateRequest();
 
         $weight = Weight::find($id);
 
@@ -87,6 +86,14 @@ class WeightController extends Controller
         $weight->save();
 
         return response()->json(['message' => 'Weight updated.', 'weight' => $weight], 200);
+    }
+
+    protected function validateRequest()
+    {
+        $this->validate($this->request, [
+            'weight' => 'required|numeric',
+            'weigh_in_date' => 'required|date'
+        ]);
     }
 
 }
