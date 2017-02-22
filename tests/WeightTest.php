@@ -52,11 +52,20 @@ class WeightTest extends TestCase
              ]);
     }
 
-    public function it_should_return_all_weights_for_user()
+    /** @test */
+    public function it_should_return_a_401_for_all_weights_with_incorrect_auth_header()
     {
         $this->get('/api/weights', ['Authorization' => 'Bearer 1234566'])
-            ->seeStatusCode(401);
-            ->see('Unauthorized.')
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
+    }
+
+    /** @test */
+    public function it_should_return_a_401_for_all_weights_with_no_auth_header()
+    {
+        $this->get('/api/weights')
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
     }
 
     /** @test */
@@ -131,7 +140,23 @@ class WeightTest extends TestCase
     }
 
     /** @test */
-    public function it_should_return_a_405_when_no_id_is_provided_for_delete($value='')
+    public function it_should_return_a_401_when_creating_weights_with_incorrect_auth_header()
+    {
+        $this->post('/api/weights', [], ['Authorization' => 'Bearer 1234566'])
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
+    }
+
+    /** @test */
+    public function it_should_return_a_401_when_creating_weights_with_no_auth_header()
+    {
+        $this->post('/api/weights', [], [])
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
+    }
+
+    /** @test */
+    public function it_should_return_a_405_when_no_id_is_provided_for_delete()
     {
         $this->delete('/api/weights', $this->headers)
             ->seeStatusCode(405);
@@ -152,7 +177,6 @@ class WeightTest extends TestCase
         $this->assertEquals($initalWeightCount + 1, $updatedUser->weights->count());
         
         $data = [];
-
         $this->delete('api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
@@ -160,6 +184,24 @@ class WeightTest extends TestCase
             ]);
 
         $this->assertEquals($updatedUser->fresh()->weights->count(), $initalWeightCount);
+    }
+
+    /** @test */
+    public function it_should_return_a_401_when_deleting_weights_with_incorrect_auth_header()
+    {
+        $weight = $this->user->weights->first();
+        $this->delete('api/weights/' . $weight->id, [], ['Authorization' => 'Bearer 1234566'])
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
+    }
+
+    /** @test */
+    public function it_should_return_a_401_when_deleting_weights_with_no_auth_header()
+    {
+        $weight = $this->user->weights->first();
+        $this->delete('api/weights/' . $weight->id, [], [])
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
     }
 
     /** @test */
@@ -273,6 +315,24 @@ class WeightTest extends TestCase
 
         $this->assertEquals($updatedWeight->weight, $newWeight);
         $this->assertEquals($updatedWeight->weigh_in_date, $newDate);
+    }
+
+    /** @test */
+    public function it_should_return_a_401_for_updating_weights_with_incorrect_auth_header()
+    {
+        $weight = $this->user->weights->first();
+        $this->put('api/weights/' . $weight->id, [], ['Authorization' => 'Bearer 1234566'])
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
+    }
+
+    /** @test */
+    public function it_should_return_a_401_for_updating_weights_with_no_auth_header()
+    {
+        $weight = $this->user->weights->first();
+        $this->put('api/weights/' . $weight->id, [], [])
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
     }
 
     /**
