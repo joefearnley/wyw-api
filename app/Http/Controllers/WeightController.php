@@ -88,6 +88,11 @@ class WeightController extends Controller
         return response()->json(['message' => 'Weight updated.', 'weight' => $weight], 200);
     }
 
+    /**
+     * Validate the weight model fields coming in from request.
+     * 
+     * @return void
+     */
     protected function validateRequest()
     {
         $this->validate($this->request, [
