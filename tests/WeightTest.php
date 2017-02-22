@@ -14,6 +14,9 @@ class WeightTest extends TestCase
      */
     private $user;
 
+    /**
+     * Set up the data for the tests.
+     */
     public function setUp()
     {
         parent::setUp();

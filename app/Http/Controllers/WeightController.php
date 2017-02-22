@@ -66,6 +66,12 @@ class WeightController extends Controller
         return response()->json('Weight deleted.', 200);
     }
 
+    /**
+     *  Update a Weight Record.
+     * 
+     * @param  int $id
+     * @return Illuminate\Http\JsonReponse;
+     */
     public function update($id)
     {
         $this->validate($this->request, [
