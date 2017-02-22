@@ -9,10 +9,15 @@ class WeightTest extends TestCase
 
     /**
      * User used for tests
-     * 
      * @var App\User
      */
     private $user;
+
+    /**
+     * Headers sent to api for authorization.
+     * @var array
+     */
+    private $headers = [];
 
     /**
      * Set up the data for the tests.
@@ -22,13 +27,14 @@ class WeightTest extends TestCase
         parent::setUp();
         
         $this->setUpData();
+
+        $this->headers = ['Authorization' => 'Bearer ' . $this->user->api_token];
     }
 
     /** @test */
     public function it_should_return_all_weights_for_user()
     {
-        $headers = ['Authorization' => 'Bearer ' . $this->user->api_token];
-        $this->get('/api/weights', $headers)
+        $this->get('/api/weights', $this->headers)
             ->seeStatusCode(200)          
             ->seeJsonContains([
                 'weight' => '175',
@@ -48,7 +54,7 @@ class WeightTest extends TestCase
     public function it_should_return_a_422_when_no_data_is_provided()
     {
         $data = [];
-        $this->post('/api/weights', $data)
+        $this->post('/api/weights', $data, $this->headers)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight field is required.'])
             ->seeJsonContains(['The weigh in date field is required.']);
@@ -58,7 +64,7 @@ class WeightTest extends TestCase
     public function it_should_return_a_422_when_no_weight_is_provided()
     {
         $data = ['weigh_in_date' => '4/30/2017'];
-        $this->post('/api/weights', $data)
+        $this->post('/api/weights', $data, $this->headers)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight field is required.']);
     }
@@ -71,7 +77,7 @@ class WeightTest extends TestCase
             'weigh_in_date' => '4/30/2017'
         ];
 
-        $this->post('/api/weights', $data)
+        $this->post('/api/weights', $data, $this->headers)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight must be a number.']);
     }
@@ -80,7 +86,7 @@ class WeightTest extends TestCase
     public function it_should_return_a_422_when_no_weigh_in_date_is_provided()
     {
         $data = ['weight' => 160];
-        $this->post('/api/weights', $data)
+        $this->post('/api/weights', $data, $this->headers)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weigh in date field is required.']);
     }
@@ -93,7 +99,7 @@ class WeightTest extends TestCase
             'weigh_in_date' => 'sadfljslkfj'
         ];
 
-        $this->post('/api/weights', $data)
+        $this->post('/api/weights', $data, $this->headers)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weigh in date is not a valid date.']);
     }
@@ -106,7 +112,7 @@ class WeightTest extends TestCase
             'weigh_in_date' => '4/30/2017'
         ];
 
-        $this->post('/api/weights', $data)
+        $this->post('/api/weights', $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
                 'weight' => 160,
@@ -118,7 +124,7 @@ class WeightTest extends TestCase
     /** @test */
     public function it_should_return_a_405_when_no_id_is_provided_for_delete($value='')
     {
-        $this->delete('/api/weights')
+        $this->delete('/api/weights', $this->headers)
             ->seeStatusCode(405);
     }
 
@@ -129,15 +135,16 @@ class WeightTest extends TestCase
 
         $weight = $this->user->weights()->create([
             'weight' => 175,
-            'weigh_in_date' => '1/30/2017',
-            'user_id' => $this->user->id
+            'weigh_in_date' => '1/30/2017'
         ]);
 
         $updatedUser = $this->user->fresh();
 
         $this->assertEquals($initalWeightCount + 1, $updatedUser->weights->count());
+        
+        $data = [];
 
-        $this->delete('api/weights/' . $weight->id)
+        $this->delete('api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
                 'Weight deleted.'
@@ -158,7 +165,7 @@ class WeightTest extends TestCase
     {
         $weight = $this->user->weights->first();
         $data = ['weigh_in_date' => '4/30/2017'];
-        $this->put('/api/weights/' . $weight->id, $data)
+        $this->put('/api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weight field is required.']);
     }
@@ -168,7 +175,7 @@ class WeightTest extends TestCase
     {
         $weight = $this->user->weights->first();
         $data = ['weight' => '170'];
-        $this->put('/api/weights/' . $weight->id, $data)
+        $this->put('/api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(422)
             ->seeJsonContains(['The weigh in date field is required.']);
     }
@@ -185,7 +192,7 @@ class WeightTest extends TestCase
             'weigh_in_date' => $weight->weigh_in_date
         ];
 
-        $this->put('api/weights/' . $weight->id, $data)
+        $this->put('api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
                 'message' => 'Weight updated.'
@@ -213,7 +220,7 @@ class WeightTest extends TestCase
             'weigh_in_date' => $newDate
         ];
 
-        $this->put('api/weights/' . $weight->id, $data)
+        $this->put('api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
                 'message' => 'Weight updated.'
@@ -242,7 +249,7 @@ class WeightTest extends TestCase
             'weigh_in_date' => $newDate
         ];
 
-        $this->put('api/weights/' . $weight->id, $data)
+        $this->put('api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
                 'message' => 'Weight updated.'
