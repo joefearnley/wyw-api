@@ -52,6 +52,13 @@ class WeightTest extends TestCase
              ]);
     }
 
+    public function it_should_return_all_weights_for_user()
+    {
+        $this->get('/api/weights', ['Authorization' => 'Bearer 1234566'])
+            ->seeStatusCode(401);
+            ->see('Unauthorized.')
+    }
+
     /** @test */
     public function it_should_return_a_422_when_no_data_is_provided()
     {
