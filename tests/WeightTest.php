@@ -9,12 +9,14 @@ class WeightTest extends TestCase
 
     /**
      * User used for tests
+     * 
      * @var App\User
      */
     private $user;
 
     /**
      * Headers sent to api for authorization.
+     * 
      * @var array
      */
     private $headers = [];
