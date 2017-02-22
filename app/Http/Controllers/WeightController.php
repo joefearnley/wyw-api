@@ -66,4 +66,16 @@ class WeightController extends Controller
         return response()->json('Weight deleted.', 200);
     }
 
+    public function update($id)
+    {
+        $weight = Weight::find($id);
+
+        $weight->weight = $this->request->input('weight');
+        $weight->weigh_in_date = $this->request->input('weigh_in_date');
+
+        //$weight->save();
+
+        return response()->json(['message' => 'Weight updated.', 'weight' => $weight], 200);
+    }
+
 }

@@ -10,5 +10,6 @@ $app->group(['prefix' => 'api'], function () use ($app) {
     $app->get('/weights', 'WeightController@index');
     $app->post('/weights', 'WeightController@create');
     $app->delete('/weights/{id}', 'WeightController@delete');
+    $app->put('/weights/{id}', 'WeightController@update');
 });
 

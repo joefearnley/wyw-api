@@ -8,7 +8,7 @@ class WeightTest extends TestCase
     use DatabaseMigrations;
 
     /**
-     * User used for tests.
+     * User used for tests
      * 
      * @var App\User
      */
@@ -130,9 +130,9 @@ class WeightTest extends TestCase
             'user_id' => $this->user->id
         ]);
 
-        $this->user = $this->user->fresh();
+        $updatedUser = $this->user->fresh();
 
-        $this->assertEquals($initalWeightCount + 1, $this->user->weights->count());
+        $this->assertEquals($initalWeightCount + 1, $updatedUser->weights->count());
 
         $this->delete('api/weights/' . $weight->id)
             ->seeStatusCode(200)
@@ -140,7 +140,35 @@ class WeightTest extends TestCase
                 'Weight deleted.'
             ]);
 
-        $this->assertEquals($this->user->fresh()->weights->count(), $initalWeightCount);
+        $this->assertEquals($updatedUser->fresh()->weights->count(), $initalWeightCount);
+    }
+
+    /** @test */
+    public function it_should_update_weight_weight()
+    {
+        $weight = $this->user->weights->first();
+
+        $newWeight = $weight->weight - 5;
+
+        $data = [
+            'weight' => $newWeight,
+            'weight_in_date' => $weight->weight_in_date
+        ];
+
+        $this->put('api/weights/' . $weight->id, $data)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
+                'message' => 'Weight updated.'
+            ])
+            ->seeJsonContains([
+                'weight' => $newWeight,
+                'weigh_in_date' => $weight->weigh_in_date,
+                'user_id' => (string) $this->user->id
+            ]);
+
+        $updatedWeight = $this->user->refresh()->weights->first();
+
+        $this->assertEquals($updatedWeight->weight, $newWeight);
     }
 
     /**
