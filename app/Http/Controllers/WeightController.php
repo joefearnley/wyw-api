@@ -68,12 +68,17 @@ class WeightController extends Controller
 
     public function update($id)
     {
+        $this->validate($this->request, [
+            'weight' => 'required|numeric',
+            'weigh_in_date' => 'required|date'
+        ]);
+
         $weight = Weight::find($id);
 
         $weight->weight = $this->request->input('weight');
         $weight->weigh_in_date = $this->request->input('weigh_in_date');
 
-        //$weight->save();
+        $weight->save();
 
         return response()->json(['message' => 'Weight updated.', 'weight' => $weight], 200);
     }

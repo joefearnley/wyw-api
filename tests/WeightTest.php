@@ -144,7 +144,34 @@ class WeightTest extends TestCase
     }
 
     /** @test */
-    public function it_should_update_weight_weight()
+    public function it_should_return_a_405_when_no_id_is_provided_for_update()
+    {
+        $this->put('api/weights')
+            ->seeStatusCode(405);
+    }
+
+    /** @test */
+    public function it_should_return_a_422_when_no_weight_is_provided_for_update()
+    {
+        $weight = $this->user->weights->first();
+        $data = ['weigh_in_date' => '4/30/2017'];
+        $this->put('/api/weights/' . $weight->id, $data)
+            ->seeStatusCode(422)
+            ->seeJsonContains(['The weight field is required.']);
+    }
+
+    /** @test */
+    public function it_should_return_a_422_when_no_weigh_in_date_is_provided_for_update()
+    {
+        $weight = $this->user->weights->first();
+        $data = ['weight' => '170'];
+        $this->put('/api/weights/' . $weight->id, $data)
+            ->seeStatusCode(422)
+            ->seeJsonContains(['The weigh in date field is required.']);
+    }
+
+    /** @test */
+    public function it_should_update_weights_weight()
     {
         $weight = $this->user->weights->first();
 
@@ -152,7 +179,7 @@ class WeightTest extends TestCase
 
         $data = [
             'weight' => $newWeight,
-            'weight_in_date' => $weight->weight_in_date
+            'weigh_in_date' => $weight->weigh_in_date
         ];
 
         $this->put('api/weights/' . $weight->id, $data)
@@ -166,9 +193,67 @@ class WeightTest extends TestCase
                 'user_id' => (string) $this->user->id
             ]);
 
-        $updatedWeight = $this->user->refresh()->weights->first();
+        $updatedWeight = $this->user->fresh()->weights->first();
 
         $this->assertEquals($updatedWeight->weight, $newWeight);
+    }
+
+    /** @test */
+    public function it_should_update_weights_weigh_in_date()
+    {
+        $weight = $this->user->weights->first();
+
+        $newDate = '1/27/2017';
+
+        $data = [
+            'weight' => $weight->weight,
+            'weigh_in_date' => $newDate
+        ];
+
+        $this->put('api/weights/' . $weight->id, $data)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
+                'message' => 'Weight updated.'
+            ])
+            ->seeJsonContains([
+                'weight' => $weight->weight,
+                'weigh_in_date' => $newDate,
+                'user_id' => (string) $this->user->id
+            ]);
+
+        $updatedWeight = $this->user->fresh()->weights->first();
+
+        $this->assertEquals($updatedWeight->weigh_in_date, $newDate);
+    }
+
+    /** @test */
+    public function it_should_update_weights_weight_and_weigh_in_date()
+    {
+        $weight = $this->user->weights->first();
+
+        $newWeight = $weight->weight - 5;
+        $newDate = '1/27/2017';
+
+        $data = [
+            'weight' => $newWeight,
+            'weigh_in_date' => $newDate
+        ];
+
+        $this->put('api/weights/' . $weight->id, $data)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
+                'message' => 'Weight updated.'
+            ])
+            ->seeJsonContains([
+                'weight' => $newWeight,
+                'weigh_in_date' => $newDate,
+                'user_id' => (string) $this->user->id
+            ]);
+
+        $updatedWeight = $this->user->fresh()->weights->first();
+
+        $this->assertEquals($updatedWeight->weight, $newWeight);
+        $this->assertEquals($updatedWeight->weigh_in_date, $newDate);
     }
 
     /**
