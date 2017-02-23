@@ -27,7 +27,11 @@ class SignupController extends Controller
 
     public function signup()
     {
-        // validate 
+        $this->validate($this->request, [
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6'
+        ]);
 
         $user = new User($this->request->all());
         $user->password = Hash::make($this->request->input('password'));
@@ -40,19 +44,6 @@ class SignupController extends Controller
         ];
 
         return response()->json($response, 200);
-    }
-
-    /**
-     * Validate the weight model fields coming in from request.
-     * 
-     * @return void
-     */
-    protected function validateRequest()
-    {
-        $this->validate($this->request, [
-            'weight' => 'required|numeric',
-            'weigh_in_date' => 'required|date'
-        ]);
     }
 
 }
