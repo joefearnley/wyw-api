@@ -8,7 +8,7 @@ class SignupTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    public function it_should_signup_a_user()
+    public function it_should_signup_a_user_and_return_a_token()
     {
         $data = [
             'name' => 'John Doe',
@@ -22,11 +22,11 @@ class SignupTest extends TestCase
                 'message' => 'Signup complete.'
             ]);
 
-        $repsonse = json_decode($this->response->getContent(), true);
+        $response = $this->response->getData(true);
 
         $user = User::first();
 
-        $this->assertEquals($user->api_token, $repsonse['token']);
+        $this->assertEquals($user->api_token, $response['token']);
     }
 
     /** @test */
