@@ -25,18 +25,16 @@ class SignupController extends Controller
         $this->request = $request;
     }
 
+    /**
+     *  Sign up and create a user.
+     * 
+     * @return Illuminate\Http\JsonResponse;
+     */
     public function signup()
     {
-        $this->validate($this->request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
-        ]);
+        $this->validateRequest();
 
-        $user = new User($this->request->all());
-        $user->password = Hash::make($this->request->input('password'));
-        $user->api_token = str_random(60);
-        $user->save();
+        $user = $this->createUser();
 
         $response = [
             'message' => 'Signup complete.',
@@ -44,6 +42,35 @@ class SignupController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    /**
+     *  Create user based on request input.
+     * 
+     * @return App\User
+     */
+    public function createUser()
+    {
+        $user = new User($this->request->all());
+        $user->password = Hash::make($this->request->input('password'));
+        $user->api_token = str_random(60);
+        $user->save();
+
+        return $user;
+    }
+
+    /**
+     *  Validate required data from request.
+     * 
+     * @return void
+     */
+    public function validateRequest()
+    {
+        $this->validate($this->request, [
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6'
+        ]);
     }
 
 }
