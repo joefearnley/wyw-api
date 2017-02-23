@@ -40,6 +40,19 @@ class WeightController extends Controller
     }
 
     /**
+     * Find a weight record.
+     * 
+     * @param  int $id
+     * @return [type]
+     */
+    public function read($id)
+    {
+        $weight = Weight::find($id);
+
+        return response()->json($weight, 200);
+    }
+
+    /**
      * Create a Weight record.
      * 
      * @return Illuminate\Http\JsonResponse;
@@ -50,22 +63,12 @@ class WeightController extends Controller
 
         $weight = $this->request->user()->weights()->create($this->request->all());
 
-        return response()->json($weight, 200);
-    }
+        $response = [
+            'message' => 'Weight created.', 
+            'weight' => $weight
+        ];
 
-    /**
-     *  Delete a Weight Record.
-     * 
-     * @param  int $id
-     * @return Illuminate\Http\JsonReponse;
-     */
-    public function delete($id)
-    {
-        $weight = Weight::find($id);
-
-        $weight->delete();
-
-        return response()->json('Weight deleted.', 200);
+        return response()->json($response, 200);
     }
 
     /**
@@ -85,7 +88,27 @@ class WeightController extends Controller
 
         $weight->save();
 
-        return response()->json(['message' => 'Weight updated.', 'weight' => $weight], 200);
+        $response = [
+            'message' => 'Weight updated.', 
+            'weight' => $weight
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     *  Delete a Weight Record.
+     * 
+     * @param  int $id
+     * @return Illuminate\Http\JsonReponse;
+     */
+    public function delete($id)
+    {
+        Weight::find($id)->delete();
+
+        $response = ['message' => 'Weight deleted.'];
+
+        return response()->json($response, 200);
     }
 
     /**

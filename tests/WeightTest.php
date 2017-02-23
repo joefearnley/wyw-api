@@ -69,7 +69,38 @@ class WeightTest extends TestCase
     }
 
     /** @test */
-    public function it_should_return_a_422_when_no_data_is_provided()
+    public function it_should_find_a_weight()
+    {
+        $weight = $this->user->weights->first();
+
+        $this->get('/api/weights/' . $weight->id, $this->headers)
+            ->seeStatusCode(200)
+            ->seeJsonContains([
+                'weight' => '175',
+                'weigh_in_date' => '1/30/2017'
+             ]);
+    }
+
+    /** @test */
+    public function it_should_return_a_401_reading_weight_with_incorrect_auth_header()
+    {
+        $weight = $this->user->weights->first();
+        $this->get('/api/weights/' . $weight->id, ['Authorization' => 'Bearer 1234566'])
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
+    }
+
+    /** @test */
+    public function it_should_return_a_401_reading_weight_with_no_auth_header()
+    {
+        $weight = $this->user->weights->first();
+        $this->get('/api/weights/' . $weight->id)
+            ->seeStatusCode(401)
+            ->assertEquals('Unauthorized.', $this->response->getContent());
+    }
+
+    /** @test */
+    public function it_should_return_a_422_creating_weight_when_no_data_is_provided()
     {
         $data = [];
         $this->post('/api/weights', $data, $this->headers)
@@ -133,6 +164,9 @@ class WeightTest extends TestCase
         $this->post('/api/weights', $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
+                'message' => 'Weight created.'
+            ])            
+            ->seeJsonContains([
                 'weight' => 160,
                 'weigh_in_date' => '4/30/2017',
                 'user_id' => $this->user->id
@@ -180,7 +214,7 @@ class WeightTest extends TestCase
         $this->delete('api/weights/' . $weight->id, $data, $this->headers)
             ->seeStatusCode(200)
             ->seeJsonContains([
-                'Weight deleted.'
+                'message' => 'Weight deleted.'
             ]);
 
         $this->assertEquals($updatedUser->fresh()->weights->count(), $initalWeightCount);
