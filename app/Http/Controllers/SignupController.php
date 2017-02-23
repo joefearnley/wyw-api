@@ -49,7 +49,7 @@ class SignupController extends Controller
      * 
      * @return App\User
      */
-    public function createUser()
+    protected function createUser()
     {
         $user = new User($this->request->all());
         $user->password = Hash::make($this->request->input('password'));
@@ -64,7 +64,7 @@ class SignupController extends Controller
      * 
      * @return void
      */
-    public function validateRequest()
+    protected function validateRequest()
     {
         $this->validate($this->request, [
             'name' => 'required',
