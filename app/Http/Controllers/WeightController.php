@@ -43,7 +43,7 @@ class WeightController extends Controller
      * Find a weight record.
      * 
      * @param  int $id
-     * @return [type]
+     * @return Illuminate\Http\JsonResponse;
      */
     public function read($id)
     {

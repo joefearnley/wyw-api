@@ -33,6 +33,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password'
     ];
 
+    /**
+     *  Get the weights this user has.
+     * 
+     * @return Illuminate\Support\Collection
+     */
     public function weights()
     {
         return $this->hasMany('App\Weight');

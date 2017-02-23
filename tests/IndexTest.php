@@ -2,7 +2,8 @@
 
 class IndexTest extends TestCase
 {
-    public function testItShouldReturnCorrectText()
+    /** @test */
+    public function it_should_return_the_correct_response()
     {
         $this->get('/');
 
