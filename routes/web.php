@@ -10,6 +10,8 @@ $app->group(['prefix' => 'api'], function () use ($app) {
 
     $app->post('signup', 'SignupController@signup');
 
+    $app->post('login', 'LoginController@login');
+
     $app->get('/weights', 'WeightController@index');
     $app->get('/weights/{id}', 'WeightController@read');
     $app->post('/weights', 'WeightController@create');
