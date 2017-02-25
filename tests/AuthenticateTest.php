@@ -8,6 +8,11 @@ class AuthenticateTest extends TestCase
 {
     use DatabaseMigrations;
 
+    /**
+     * User used for tests
+     * 
+     * @var App\User
+     */
     private $user;
 
     public function setUp()
