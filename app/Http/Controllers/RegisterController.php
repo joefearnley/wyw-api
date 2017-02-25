@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 
-class SignupController extends Controller
+class RegisterController extends Controller
 {
     /**
      * Http request for controller.
@@ -30,7 +30,7 @@ class SignupController extends Controller
      * 
      * @return Illuminate\Http\JsonResponse;
      */
-    public function signup()
+    public function register()
     {
         $this->validateRequest();
 

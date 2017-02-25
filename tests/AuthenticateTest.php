@@ -1,9 +1,10 @@
 <?php
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Hash;
 use App\User;
 
-class LoginTest extends TestCase
+class AuthenticateTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -14,14 +15,15 @@ class LoginTest extends TestCase
         parent::setUp();
 
         $this->user = factory(App\User::class)->create([
-            'email' => 'john.doe@gmail.com'
+            'email' => 'john.doe@gmail.com',
+            'password' => Hash::make('secret')
         ]);
     }
 
     /** @test */
     public function it_should_return_a_422_when_no_data_is_provided()
     {
-        $this->post('/api/login')
+        $this->post('/api/authenticate')
             ->seeStatusCode(422)
             ->seeJsonContains(['The email field is required.'])
             ->seeJsonContains(['The password field is required.']);
@@ -32,10 +34,10 @@ class LoginTest extends TestCase
     {
         $data = [
             'email' => '',
-            'password' => str_random(10)
+            'password' => $this->user->password
         ];
 
-        $this->post('/api/login', $data)
+        $this->post('/api/authenticate', $data)
             ->seeStatusCode(422)
             ->seeJsonContains(['The email field is required.']);
     }
@@ -44,41 +46,38 @@ class LoginTest extends TestCase
     public function it_should_return_a_422_when_no_password_is_provided()
     {
         $data = [
-            'email' => 'john.doesafdasfd',
+            'email' => $this->user->email,
             'password' => ''
         ];
 
-        $this->post('/api/login', $data)
+        $this->post('/api/authenticate', $data)
             ->seeStatusCode(422)
-            ->seeJsonContains(['The email must be a valid email address.']);
+            ->seeJsonContains(['The password field is required.']);
     }
 
     /** @test */
-    public function it_should_return_a_422_email_and_password_do_not_authenticate()
+    public function it_should_return_a_401_email_and_password_do_not_authenticate()
     {
         $data = [
-            'email' => 'john.doe@gmail.com',
-            'password' => str_random(10)
+            'email' => $this->user->email,
+            'password' => '1234567'
         ];
 
-        $this->post('/api/signup', $data)
-            ->seeStatusCode(422)
-            ->seeJsonContains(['The email has already been taken.']);
+        $this->post('/api/authenticate', $data)
+            ->seeStatusCode(401)
+            ->seeJsonContains(['Credentials do not match our records.']);
     }
 
     /** @test */
     public function it_should_login_a_user_and_return_a_token()
     {
         $data = [
-            'email' => 'john.doe@gmail.com',
-            'password' => str_random(10)
+            'email' => $this->user->email,
+            'password' => 'secret'
         ];
 
-        $this->post('/api/signup', $data)
-            ->seeStatusCode(200)
-            ->seeJsonContains([
-                'message' => 'Signup complete.'
-            ]);
+        $this->post('/api/authenticate', $data)
+            ->seeStatusCode(200);
 
         $response = $this->response->getData(true);
 
