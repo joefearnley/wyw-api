@@ -76,7 +76,7 @@ class RegisterTest extends TestCase
             ->seeJsonContains(['The password must be at least 6 characters.']);
     }
 
-        /** @test */
+    /** @test */
     public function it_should_register_a_user_and_return_a_token()
     {
         $data = [
